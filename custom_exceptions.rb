@@ -1,0 +1,2 @@
+class ProductError < StandardError
+end
