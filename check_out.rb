@@ -52,16 +52,15 @@ class CheckOut
     @promo_rules.each do |promo|
       next if promo[:min_pay].to_i > @original_price
 
-      count_quantity = @product_list.inject(0) { |sum, _p| sum + 1 }
+      count_quantity = @product_list.size
       next if count_quantity < promo[:quantity]
 
       if promo[:code]
         product_item = @product_list.select { |p| p.code == promo[:code] }
-        product_code_quantity = product_item.inject(0) { |sum, _p| sum + 1 }
-        next if product_code_quantity < promo[:quantity]
+        next if product_item.size < promo[:quantity]
 
         if promo[:type] == 'original_price' # applied for a product by code
-          @discount_list[:original_price] += handle_discount(product_item[0].price, promo[:discount], product_code_quantity)
+          @discount_list[:original_price] += handle_discount(product_item[0].price, promo[:discount], product_item.size)
         else # applied for all products
           @discount_list[:discount] << promo[:discount]
         end
